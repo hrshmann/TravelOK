@@ -240,12 +240,12 @@ export default function CompareDrawer() {
                                                         {attr.label}
                                                     </td>
                                                     {compareList.map((pkg) => {
-                                                        const value = (pkg as Record<string, unknown>)[attr.key];
+                                                        const value = (pkg as unknown as Record<string, unknown>)[attr.key];
                                                         const formattedValue = attr.format(value as never);
 
                                                         // Find best value for highlighting
                                                         const allValues = compareList.map(
-                                                            (p) => (p as Record<string, unknown>)[attr.key]
+                                                            (p) => (p as unknown as Record<string, unknown>)[attr.key]
                                                         );
                                                         const isBest =
                                                             attr.key === "price"

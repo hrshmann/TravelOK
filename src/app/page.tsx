@@ -60,7 +60,9 @@ export default function HomePage() {
         <section className="relative z-30 -mt-20 pb-8">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-3xl shadow-2xl shadow-slate-200/50 p-6">
-              <SearchWidget />
+              <Suspense fallback={<div className="h-[400px] w-full bg-slate-100/50 rounded-3xl animate-pulse" />}>
+                <SearchWidget />
+              </Suspense>
             </div>
           </div>
         </section>
