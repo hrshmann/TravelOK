@@ -129,8 +129,8 @@ export default function Footer() {
 
                 {/* Big Text Footnote */}
                 <div className="border-t border-white/5 pt-12 pb-8">
-                    <p className="text-[12vw] leading-none font-bold text-white/5 text-center select-none pointer-events-none" style={{ fontFamily: 'var(--font-sora)' }}>
-                        OKTRAVELS
+                    <p className="text-[8vw] md:text-[10vw] leading-none font-bold text-center select-none pointer-events-none bg-gradient-to-r from-orange-500/20 via-orange-400/15 to-blue-900/20 bg-clip-text text-transparent" style={{ fontFamily: 'var(--font-sora)' }}>
+                        OK TRAVEL & TOURISM
                     </p>
                 </div>
             </div>
@@ -140,7 +140,7 @@ export default function Footer() {
                 <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                         <p className="text-slate-500 text-sm">
-                            © {new Date().getFullYear()} OKTravels. All rights reserved.
+                            © {new Date().getFullYear()} OK Travel & Tourism. All rights reserved.
                         </p>
                         <div className="flex gap-8">
                             <Link href="/privacy" className="text-slate-500 hover:text-white text-sm transition-colors">
