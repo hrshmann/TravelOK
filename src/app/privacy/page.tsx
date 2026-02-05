@@ -74,7 +74,7 @@ export default function PrivacyPage() {
                         <div className="bg-slate-50 rounded-xl p-6">
                             <p className="text-slate-700 font-semibold">OKTravels</p>
                             <p className="text-slate-600">Email: privacy@oktravels.com</p>
-                            <p className="text-slate-600">Phone: +971 50 123 4567</p>
+                            <p className="text-slate-600">Phone: +971 58 525 5484</p>
                             <p className="text-slate-600">Address: Business Bay, Dubai, UAE</p>
                         </div>
                     </div>

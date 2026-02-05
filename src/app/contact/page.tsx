@@ -19,7 +19,7 @@ const contactInfo = [
     {
         icon: Phone,
         title: "Call Us",
-        details: ["+971 50 123 4567", "+971 4 123 4567"],
+        details: ["+971 58 525 5484"],
         color: "bg-blue-100 text-blue-600",
     },
     {

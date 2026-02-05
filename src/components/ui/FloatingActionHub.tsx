@@ -32,7 +32,7 @@ const botResponses: Record<string, string> = {
     "visa inquiry": "We offer visa services for 50+ countries! 🛂 UAE visas are processed within 24-48 hours. Which country's visa do you need assistance with?",
     "package prices": "Our packages start from just $799! 💰 Popular options:\n• Dubai 5D: $1,299\n• Maldives 7D: $2,499\n• Thailand 6D: $899\nWould you like details on any specific package?",
     "custom itinerary": "We specialize in personalized trips! ✨ Tell me your preferred:\n1. Destination\n2. Travel dates\n3. Budget range\nOur experts will craft the perfect itinerary for you!",
-    default: "Thanks for reaching out! 😊 Our travel experts are here to help. You can:\n• Call us: +971 50 123 4567\n• Email: info@oktravels.com\n• Or tell me what you're looking for!",
+    default: "Thanks for reaching out! 😊 Our travel experts are here to help. You can:\n• Call us: +971 58 525 5484\n• Email: info@oktravels.com\n• Or tell me what you're looking for!",
 };
 
 export default function FloatingActionHub() {
@@ -102,7 +102,7 @@ export default function FloatingActionHub() {
             icon: Phone,
             label: "Call Now",
             color: "bg-blue-500",
-            href: "tel:+971501234567",
+            href: "tel:+971585255484",
         },
         {
             icon: Mail,
@@ -267,8 +267,8 @@ export default function FloatingActionHub() {
                                         >
                                             <div
                                                 className={`max-w-[80%] p-3 rounded-2xl ${msg.isBot
-                                                        ? "bg-white shadow-sm rounded-tl-none"
-                                                        : "bg-green-500 text-white rounded-tr-none"
+                                                    ? "bg-white shadow-sm rounded-tl-none"
+                                                    : "bg-green-500 text-white rounded-tr-none"
                                                     }`}
                                             >
                                                 <p className="text-sm whitespace-pre-line">{msg.text}</p>
