@@ -45,7 +45,7 @@ export default function AboutPage() {
 
                 <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <span className="inline-block px-4 py-1.5 bg-white/20 text-white text-sm font-semibold rounded-full mb-6">
-                        About OKTravels
+                        About OK Travel & Tourism
                     </span>
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
                         Your Trusted Travel Partner
@@ -89,7 +89,7 @@ export default function AboutPage() {
                             </h2>
                             <div className="space-y-4 text-slate-600 leading-relaxed">
                                 <p>
-                                    OKTravels was founded with a simple mission: to make travel accessible,
+                                    OK Travel & Tourism was founded with a simple mission: to make travel accessible,
                                     enjoyable, and memorable for everyone. What started as a small agency
                                     in Dubai has grown into a trusted name in the travel industry.
                                 </p>

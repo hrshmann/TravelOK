@@ -24,9 +24,9 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
-  title: "OKTravels | Your Gateway to Unforgettable Journeys",
+  title: "OK Travel & Tourism | Your Gateway to Unforgettable Journeys",
   description:
-    "Discover curated holiday packages, flight deals, and visa services. Experience world-class destinations with OKTravels - your trusted travel partner.",
+    "Discover curated holiday packages, flight deals, and visa services. Experience world-class destinations with OK Travel & Tourism - your trusted travel partner. Every Journey is OK!",
   keywords: [
     "travel agency",
     "holiday packages",
@@ -37,12 +37,12 @@ export const metadata: Metadata = {
     "Thailand holidays",
   ],
   openGraph: {
-    title: "OKTravels | Your Gateway to Unforgettable Journeys",
+    title: "OK Travel & Tourism | Your Gateway to Unforgettable Journeys",
     description:
       "Discover curated holiday packages, flight deals, and visa services.",
     type: "website",
     locale: "en_US",
-    siteName: "OKTravels",
+    siteName: "OK Travel & Tourism",
   },
 };
 

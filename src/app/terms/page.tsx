@@ -84,7 +84,7 @@ export default function TermsPage() {
 
                         <h2 className="text-2xl font-bold text-slate-900 mb-4">9. Contact Information</h2>
                         <div className="bg-slate-50 rounded-xl p-6">
-                            <p className="text-slate-700 font-semibold">OKTravels</p>
+                            <p className="text-slate-700 font-semibold">OK Travel & Tourism</p>
                             <p className="text-slate-600">Email: legal@oktravels.com</p>
                             <p className="text-slate-600">Phone: +971 58 525 5484</p>
                             <p className="text-slate-600">Address: Business Bay, Dubai, UAE</p>

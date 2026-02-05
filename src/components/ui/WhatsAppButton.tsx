@@ -11,7 +11,7 @@ interface WhatsAppButtonProps {
 }
 
 export default function WhatsAppButton({
-    phoneNumber = "971501234567",
+    phoneNumber = "971585255484",
     message = "Hi! I'm interested in your travel packages. Can you help me plan my trip?",
 }: WhatsAppButtonProps) {
     const [isOpen, setIsOpen] = useState(false);
@@ -50,7 +50,7 @@ export default function WhatsAppButton({
                                     <MessageCircle size={24} />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold">OKTravels Support</h4>
+                                    <h4 className="font-bold">OK Travel & Tourism</h4>
                                     <p className="text-sm text-white/80">
                                         Typically replies in minutes
                                     </p>
