@@ -3,7 +3,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Phone, Globe, ChevronDown, Shield, Award } from "lucide-react";
+import Image from "next/image";
+import { Menu, X, Phone, ChevronDown, Shield, Award } from "lucide-react";
 import { cn } from "@/lib/utils";
 import TrustBadges from "@/components/ui/TrustBadges";
 import CurrencySelector from "@/components/ui/CurrencySelector";
@@ -68,16 +69,14 @@ export default function Header() {
                 <div className="flex items-center justify-between">
                     {/* Logo & Brand */}
                     <Link href="/" className="flex items-center gap-3 group z-50">
-                        <div className="relative w-10 h-10 overflow-hidden rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg group-hover:shadow-orange-500/50 transition-all duration-500">
-                            <Globe className="text-white relative z-10" size={20} />
-                            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                        </div>
-                        <span className={cn(
-                            "text-2xl font-bold tracking-tight",
-                            isScrolled ? "text-white" : "text-white"
-                        )} style={{ fontFamily: 'var(--font-sora)' }}>
-                            OK<span className="text-orange-400">Travels</span>
-                        </span>
+                        <Image
+                            src="/logo.png"
+                            alt="OK Travel & Tourism - Every Journey is OK"
+                            width={140}
+                            height={50}
+                            className="h-10 md:h-12 w-auto object-contain"
+                            priority
+                        />
                     </Link>
 
                     {/* Desktop Navigation - Centered Floating Pill */}

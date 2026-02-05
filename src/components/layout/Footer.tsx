@@ -1,6 +1,7 @@
 // src/components/layout/Footer.tsx
 import Link from "next/link";
-import { Globe, Phone, Mail, MapPin, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import Image from "next/image";
+import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 
 const quickLinks = [
     { label: "Holiday Packages", href: "/holidays" },
@@ -32,12 +33,13 @@ export default function Footer() {
                     {/* Brand Column */}
                     <div className="md:col-span-5 lg:col-span-4">
                         <Link href="/" className="inline-flex items-center gap-3 mb-8 group">
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg group-hover:shadow-orange-500/50 transition-shadow duration-500">
-                                <Globe className="text-white" size={24} />
-                            </div>
-                            <span className="text-3xl font-bold tracking-tight" style={{ fontFamily: 'var(--font-sora)' }}>
-                                OK<span className="text-orange-400">Travels</span>
-                            </span>
+                            <Image
+                                src="/logo.png"
+                                alt="OK Travel & Tourism - Every Journey is OK"
+                                width={160}
+                                height={55}
+                                className="h-12 w-auto object-contain"
+                            />
                         </Link>
                         <p className="text-slate-400 text-lg leading-relaxed mb-8 max-w-sm">
                             Crafting unforgettable journeys for the modern explorer. Experience the world with unmatched luxury and comfort.
