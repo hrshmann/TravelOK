@@ -84,7 +84,7 @@ export default function StatsSection() {
     return (
         <section
             ref={containerRef}
-            className="relative py-32 overflow-hidden"
+            className="relative py-20 md:py-32 overflow-hidden"
         >
             {/* Background Image with Parallax */}
             <motion.div
@@ -106,7 +106,7 @@ export default function StatsSection() {
                 className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
             >
                 {/* Header */}
-                <div className="text-center mb-20">
+                <div className="text-center mb-12 md:mb-20">
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -128,7 +128,7 @@ export default function StatsSection() {
                 </div>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     {stats.map((stat, index) => (
                         <motion.div
                             key={stat.label}

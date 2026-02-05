@@ -109,7 +109,7 @@ export default function HeroAwwwards() {
             >
                 {/* Main Hero Content */}
                 <div className="flex-1 flex items-center">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-32">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-20 md:py-32">
                         <div className="grid lg:grid-cols-2 gap-12 items-center">
                             {/* Left Side - Typography */}
                             <div className="space-y-8">
@@ -135,7 +135,7 @@ export default function HeroAwwwards() {
                                             animate={{ opacity: 1, y: 0, rotateX: 0 }}
                                             exit={{ opacity: 0, y: -40 }}
                                             transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-                                            className="text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-[0.9] tracking-tight"
+                                            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-[1.0] md:leading-[0.9] tracking-tight"
                                             style={{ fontFamily: "var(--font-sora)" }}
                                         >
                                             {activeDestination.name}
@@ -149,7 +149,7 @@ export default function HeroAwwwards() {
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -20 }}
                                             transition={{ duration: 0.6, delay: 0.2 }}
-                                            className="text-2xl md:text-3xl text-white/60 font-light italic"
+                                            className="text-lg sm:text-xl md:text-3xl text-white/60 font-light italic"
                                             style={{ fontFamily: "var(--font-sora)" }}
                                         >
                                             {activeDestination.tagline}
@@ -183,7 +183,7 @@ export default function HeroAwwwards() {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.6 }}
-                                    className="flex flex-wrap gap-4 pt-4"
+                                    className="flex flex-col sm:flex-row gap-4 pt-4"
                                 >
                                     <Link
                                         href="/holidays"

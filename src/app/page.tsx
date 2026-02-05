@@ -89,7 +89,7 @@ export default function HomePage() {
       </ScrollReveal>
 
       {/* ========== FEATURED PACKAGES ========== */}
-      <section className="py-24 bg-slate-50 relative overflow-hidden">
+      <section className="py-12 md:py-24 bg-slate-50 relative overflow-hidden">
         {/* Decorative */}
         <div className="absolute top-0 left-0 w-96 h-96 bg-orange-100 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 opacity-50" />
         <div className="absolute bottom-0 right-0 w-80 h-80 bg-amber-100 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 opacity-50" />
@@ -141,7 +141,7 @@ export default function HomePage() {
       <BlogSection />
 
       {/* ========== NEWSLETTER CTA ========== */}
-      <section className="relative py-24 overflow-hidden">
+      <section className="relative py-16 md:py-24 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
           <Image
