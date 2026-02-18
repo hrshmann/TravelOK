@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { X, Send, User, Mail, Phone, MessageSquare, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { addBooking } from "@/data/bookings";
 
 interface EnquiryModalProps {
     isOpen: boolean;
@@ -53,8 +54,18 @@ export default function EnquiryModal({
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        // Save to bookings data layer
+        addBooking({
+            type: 'package',
+            packageName: packageName,
+            destination: destination,
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            message: formData.message,
+        });
+
+        await new Promise((resolve) => setTimeout(resolve, 800));
 
         setIsSubmitting(false);
         setIsSuccess(true);

@@ -22,6 +22,11 @@ export interface HolidayPackage {
   images: ImageAsset[];
   amenities: string[]; // e.g., ["Hotel", "Transfer", "Breakfast"]
   isFeatured?: boolean;
+  // Rich content fields (managed via admin)
+  description?: string;
+  inclusions?: string[];
+  exclusions?: string[];
+  itinerary?: { day: number; title: string; description: string }[];
 }
 
 export interface FlightPackage {

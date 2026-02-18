@@ -53,6 +53,36 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${outfit.variable} ${sora.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "TravelAgency",
+              name: "OK Travel & Tourism",
+              url: "https://www.oktravels.ae",
+              logo: "https://www.oktravels.ae/logo.png",
+              description:
+                "OK Travel & Tourism offers curated holiday packages, flight deals, UAE tours, and visa services. Your trusted travel partner in the UAE.",
+              telephone: "+971585255484",
+              email: "info@oktravels.ae",
+              address: {
+                "@type": "PostalAddress",
+                streetAddress: "Dubai",
+                addressLocality: "Dubai",
+                addressCountry: "AE",
+              },
+              sameAs: [
+                "https://www.instagram.com/oktravels",
+                "https://www.facebook.com/oktravels",
+              ],
+              openingHours: "Mo-Su 09:00-21:00",
+              priceRange: "$$",
+            }),
+          }}
+        />
+      </head>
       <body className="antialiased">
         {/* Premium Page Loader */}
         <PageLoader />

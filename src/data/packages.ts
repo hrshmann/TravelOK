@@ -1,7 +1,7 @@
 // src/data/packages.ts
 import { HolidayPackage, Testimonial } from "@/types/package";
 
-export const featuredPackages: HolidayPackage[] = [
+export const defaultPackages: HolidayPackage[] = [
     {
         id: "1",
         slug: "dubai-city-escape-5-days",
@@ -156,3 +156,56 @@ export const testimonials: Testimonial[] = [
         tripDestination: "Thailand",
     },
 ];
+
+// --- localStorage CRUD ---
+const STORAGE_KEY = "oktravel_packages";
+
+export function getPackages(): HolidayPackage[] {
+    if (typeof window === "undefined") return defaultPackages;
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) return JSON.parse(stored);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultPackages));
+        return defaultPackages;
+    } catch {
+        return defaultPackages;
+    }
+}
+
+export function savePackages(packages: HolidayPackage[]): void {
+    if (typeof window === "undefined") return;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(packages));
+}
+
+export function addPackage(pkg: Omit<HolidayPackage, "id">): HolidayPackage {
+    const packages = getPackages();
+    const newPkg: HolidayPackage = { ...pkg, id: Date.now().toString() };
+    packages.push(newPkg);
+    savePackages(packages);
+    return newPkg;
+}
+
+export function updatePackage(id: string, updates: Partial<HolidayPackage>): HolidayPackage | null {
+    const packages = getPackages();
+    const index = packages.findIndex((p) => p.id === id);
+    if (index === -1) return null;
+    packages[index] = { ...packages[index], ...updates };
+    savePackages(packages);
+    return packages[index];
+}
+
+export function deletePackage(id: string): boolean {
+    const packages = getPackages();
+    const filtered = packages.filter((p) => p.id !== id);
+    if (filtered.length === packages.length) return false;
+    savePackages(filtered);
+    return true;
+}
+
+export function resetPackages(): HolidayPackage[] {
+    savePackages(defaultPackages);
+    return defaultPackages;
+}
+
+// Keep backward compat: re-export as featuredPackages for SSR pages
+export const featuredPackages = defaultPackages;

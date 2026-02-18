@@ -1,4 +1,7 @@
 // src/app/package/[slug]/page.tsx
+"use client";
+
+import { use, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -9,6 +12,7 @@ import {
     Star,
     Clock,
     CheckCircle,
+    XCircle,
     Plane,
     Hotel,
     Utensils,
@@ -19,14 +23,16 @@ import {
     ChevronRight,
 } from "lucide-react";
 import { featuredPackages } from "@/data/packages";
+import EnquiryModal from "@/components/ui/EnquiryModal";
 
 interface Props {
     params: Promise<{ slug: string }>;
 }
 
-export default async function PackageDetailPage({ params }: Props) {
-    const { slug } = await params;
+export default function PackageDetailPage({ params }: Props) {
+    const { slug } = use(params);
     const pkg = featuredPackages.find((p) => p.slug === slug);
+    const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
 
     if (!pkg) {
         notFound();
@@ -37,7 +43,7 @@ export default async function PackageDetailPage({ params }: Props) {
     const mainImage = pkg.images[0]?.url || "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800";
     const altText = pkg.images[0]?.alt || pkg.title;
 
-    const inclusions = [
+    const defaultInclusions = [
         { icon: Plane, text: "Return Flights" },
         { icon: Hotel, text: `${pkg.durationDays}-Night Hotel Stay` },
         { icon: Utensils, text: "Daily Breakfast" },
@@ -46,7 +52,7 @@ export default async function PackageDetailPage({ params }: Props) {
         { icon: ShieldCheck, text: "Travel Insurance" },
     ];
 
-    const itinerary = [
+    const defaultItinerary = [
         {
             day: 1,
             title: "Arrival & Welcome",
@@ -78,6 +84,12 @@ export default async function PackageDetailPage({ params }: Props) {
                 "Enjoy a leisurely breakfast, check out, and transfer to the airport for your return flight.",
         },
     ];
+
+    // Use dynamic data if available, otherwise fallback to defaults
+    const itinerary = (pkg as { itinerary?: typeof defaultItinerary }).itinerary || defaultItinerary;
+    const inclusions = (pkg as { inclusions?: string[] }).inclusions;
+    const exclusions = (pkg as { exclusions?: string[] }).exclusions;
+    const description = (pkg as { description?: string }).description;
 
     return (
         <>
@@ -151,15 +163,18 @@ export default async function PackageDetailPage({ params }: Props) {
                                     About This Package
                                 </h2>
                                 <p className="text-slate-600 leading-relaxed">
-                                    Experience the best of {pkg.destination} with our carefully curated {duration} package.
+                                    {description ||
+                                        `Experience the best of ${pkg.destination} with our carefully curated ${duration} package.
                                     From breathtaking landscapes to rich cultural experiences, this journey offers the perfect
-                                    blend of adventure and relaxation.
+                                    blend of adventure and relaxation.`}
                                 </p>
-                                <p className="text-slate-600 leading-relaxed mt-4">
-                                    Our expert guides will ensure you discover hidden gems
-                                    and create memories that last a lifetime. This package includes stays at premium accommodations
-                                    with amenities like {pkg.amenities.slice(0, 3).join(", ")}.
-                                </p>
+                                {!description && (
+                                    <p className="text-slate-600 leading-relaxed mt-4">
+                                        Our expert guides will ensure you discover hidden gems
+                                        and create memories that last a lifetime. This package includes stays at premium accommodations
+                                        with amenities like {pkg.amenities.slice(0, 3).join(", ")}.
+                                    </p>
+                                )}
                             </div>
 
                             {/* Inclusions */}
@@ -167,23 +182,34 @@ export default async function PackageDetailPage({ params }: Props) {
                                 <h2 className="text-2xl font-bold text-slate-900 mb-6">
                                     What&apos;s Included
                                 </h2>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                    {inclusions.map((item, idx) => (
-                                        <div
-                                            key={idx}
-                                            className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl"
-                                        >
-                                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                                <item.icon size={20} className="text-blue-600" />
+                                {inclusions ? (
+                                    <div className="space-y-2">
+                                        {inclusions.map((item, idx) => (
+                                            <div key={idx} className="flex items-center gap-3 p-3 bg-green-50 rounded-xl">
+                                                <CheckCircle size={18} className="text-green-500 flex-shrink-0" />
+                                                <span className="text-slate-700">{item}</span>
                                             </div>
-                                            <span className="text-slate-700 font-medium">
-                                                {item.text}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                        {defaultInclusions.map((item, idx) => (
+                                            <div
+                                                key={idx}
+                                                className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl"
+                                            >
+                                                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                                    <item.icon size={20} className="text-blue-600" />
+                                                </div>
+                                                <span className="text-slate-700 font-medium">
+                                                    {item.text}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
 
-                                {/* Amenities List */}
+                                {/* Amenities */}
                                 <div className="mt-6 flex flex-wrap gap-2">
                                     {pkg.amenities.map((amenity, idx) => (
                                         <span
@@ -195,6 +221,23 @@ export default async function PackageDetailPage({ params }: Props) {
                                     ))}
                                 </div>
                             </div>
+
+                            {/* Exclusions */}
+                            {exclusions && exclusions.length > 0 && (
+                                <div>
+                                    <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                                        Not Included
+                                    </h2>
+                                    <div className="space-y-2">
+                                        {exclusions.map((item, idx) => (
+                                            <div key={idx} className="flex items-center gap-3 p-3 bg-red-50 rounded-xl">
+                                                <XCircle size={18} className="text-red-400 flex-shrink-0" />
+                                                <span className="text-slate-700">{item}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Itinerary */}
                             <div>
@@ -271,13 +314,21 @@ export default async function PackageDetailPage({ params }: Props) {
 
                                 {/* CTA Buttons */}
                                 <div className="space-y-3">
-                                    <button className="w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
-                                        Book Now
+                                    <button
+                                        onClick={() => setIsEnquiryOpen(true)}
+                                        className="w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5"
+                                    >
+                                        Enquire Now
                                         <ChevronRight size={18} />
                                     </button>
-                                    <button className="w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition-colors">
-                                        Enquire Now
-                                    </button>
+                                    <a
+                                        href="https://wa.me/971585255484"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-full py-4 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+                                    >
+                                        WhatsApp Us
+                                    </a>
                                 </div>
 
                                 {/* Features */}
@@ -300,13 +351,14 @@ export default async function PackageDetailPage({ params }: Props) {
                     </div>
                 </div>
             </section>
+
+            {/* Enquiry Modal */}
+            <EnquiryModal
+                isOpen={isEnquiryOpen}
+                onClose={() => setIsEnquiryOpen(false)}
+                packageName={pkg.title}
+                destination={pkg.destination}
+            />
         </>
     );
-}
-
-// Generate static params for all packages
-export async function generateStaticParams() {
-    return featuredPackages.map((pkg) => ({
-        slug: pkg.slug,
-    }));
 }

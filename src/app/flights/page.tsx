@@ -1,7 +1,7 @@
 // src/app/flights/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
     Plane,
     Calendar,
@@ -17,78 +17,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ScrollReveal from "@/components/ui/ScrollReveal";
-
-interface Flight {
-    id: string;
-    airline: string;
-    airlineLogo: string;
-    flightNumber: string;
-    departure: {
-        time: string;
-        city: string;
-        airport: string;
-    };
-    arrival: {
-        time: string;
-        city: string;
-        airport: string;
-    };
-    duration: string;
-    stops: number;
-    price: number;
-    amenities: string[];
-}
-
-const sampleFlights: Flight[] = [
-    {
-        id: "1",
-        airline: "Emirates",
-        airlineLogo: "🛫",
-        flightNumber: "EK500",
-        departure: { time: "08:00", city: "Dubai", airport: "DXB" },
-        arrival: { time: "12:30", city: "London", airport: "LHR" },
-        duration: "7h 30m",
-        stops: 0,
-        price: 2500,
-        amenities: ["wifi", "meals", "entertainment"],
-    },
-    {
-        id: "2",
-        airline: "Etihad Airways",
-        airlineLogo: "✈️",
-        flightNumber: "EY019",
-        departure: { time: "10:15", city: "Abu Dhabi", airport: "AUH" },
-        arrival: { time: "14:45", city: "London", airport: "LHR" },
-        duration: "7h 30m",
-        stops: 0,
-        price: 2350,
-        amenities: ["wifi", "meals"],
-    },
-    {
-        id: "3",
-        airline: "Qatar Airways",
-        airlineLogo: "🌍",
-        flightNumber: "QR007",
-        departure: { time: "02:30", city: "Doha", airport: "DOH" },
-        arrival: { time: "08:15", city: "London", airport: "LHR" },
-        duration: "7h 45m",
-        stops: 0,
-        price: 2200,
-        amenities: ["wifi", "meals", "entertainment"],
-    },
-    {
-        id: "4",
-        airline: "Flydubai",
-        airlineLogo: "🔵",
-        flightNumber: "FZ003",
-        departure: { time: "14:00", city: "Dubai", airport: "DXB" },
-        arrival: { time: "20:30", city: "London", airport: "STN" },
-        duration: "9h 30m",
-        stops: 1,
-        price: 1800,
-        amenities: ["meals"],
-    },
-];
+import { getActiveFlights, type Flight } from "@/data/flights";
 
 export default function FlightsPage() {
     const [flightType, setFlightType] = useState<"one-way" | "round-trip" | "multi-city">("round-trip");
@@ -98,6 +27,49 @@ export default function FlightsPage() {
     const [returnDate, setReturnDate] = useState("");
     const [passengers, setPassengers] = useState("1");
     const [cabinClass, setCabinClass] = useState("economy");
+    const [sortBy, setSortBy] = useState("price-asc");
+    const [flights, setFlights] = useState<Flight[]>([]);
+
+    // Load flights from localStorage
+    useEffect(() => {
+        setFlights(getActiveFlights());
+
+        // Listen for storage changes (e.g. from admin panel in another tab)
+        const handleStorage = (e: StorageEvent) => {
+            if (e.key === "oktravel_flights") {
+                setFlights(getActiveFlights());
+            }
+        };
+        window.addEventListener("storage", handleStorage);
+        return () => window.removeEventListener("storage", handleStorage);
+    }, []);
+
+    // Sort flights
+    const sortedFlights = useMemo(() => {
+        const sorted = [...flights];
+        switch (sortBy) {
+            case "price-asc":
+                sorted.sort((a, b) => a.price - b.price);
+                break;
+            case "price-desc":
+                sorted.sort((a, b) => b.price - a.price);
+                break;
+            case "duration":
+                sorted.sort((a, b) => {
+                    const parseDur = (d: string) => {
+                        const h = parseInt(d.match(/(\d+)h/)?.[1] || "0");
+                        const m = parseInt(d.match(/(\d+)m/)?.[1] || "0");
+                        return h * 60 + m;
+                    };
+                    return parseDur(a.duration) - parseDur(b.duration);
+                });
+                break;
+            case "departure":
+                sorted.sort((a, b) => a.departure.time.localeCompare(b.departure.time));
+                break;
+        }
+        return sorted;
+    }, [flights, sortBy]);
 
     const swapCities = () => {
         const temp = fromCity;
@@ -290,96 +262,109 @@ export default function FlightsPage() {
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900">Available Flights</h2>
-                            <p className="text-slate-600">{sampleFlights.length} flights found</p>
+                            <p className="text-slate-600">{sortedFlights.length} flights found</p>
                         </div>
-                        <select className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option>Sort by: Price (Low to High)</option>
-                            <option>Sort by: Duration (Shortest)</option>
-                            <option>Sort by: Departure Time</option>
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                        >
+                            <option value="price-asc">Sort by: Price (Low to High)</option>
+                            <option value="price-desc">Sort by: Price (High to Low)</option>
+                            <option value="duration">Sort by: Duration (Shortest)</option>
+                            <option value="departure">Sort by: Departure Time</option>
                         </select>
                     </div>
 
                     {/* Flight Cards */}
                     <div className="space-y-4">
-                        {sampleFlights.map((flight, i) => (
-                            <ScrollReveal key={flight.id} delay={i * 0.1}>
-                                <div
-                                    className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow"
-                                >
-                                    <div className="flex flex-col md:flex-row md:items-center gap-6">
-                                        {/* Airline Info */}
-                                        <div className="flex items-center gap-4 md:w-48">
-                                            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-2xl">
-                                                {flight.airlineLogo}
-                                            </div>
-                                            <div>
-                                                <p className="font-semibold text-slate-900">{flight.airline}</p>
-                                                <p className="text-sm text-slate-500">{flight.flightNumber}</p>
-                                            </div>
-                                        </div>
-
-                                        {/* Flight Times */}
-                                        <div className="flex-1 flex items-center gap-4">
-                                            {/* Departure */}
-                                            <div className="text-center">
-                                                <p className="text-2xl font-bold text-slate-900">{flight.departure.time}</p>
-                                                <p className="text-sm text-slate-500">{flight.departure.airport}</p>
-                                            </div>
-
-                                            {/* Duration */}
-                                            <div className="flex-1 flex flex-col items-center">
-                                                <span className="text-xs text-slate-400 mb-1">{flight.duration}</span>
-                                                <div className="w-full h-0.5 bg-slate-200 relative">
-                                                    <Plane
-                                                        size={16}
-                                                        className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-blue-500 rotate-90"
-                                                    />
+                        {sortedFlights.length === 0 ? (
+                            <div className="bg-white rounded-2xl p-12 text-center">
+                                <Plane size={48} className="mx-auto mb-4 text-slate-200" />
+                                <p className="text-slate-400 text-lg">No flights available</p>
+                                <p className="text-slate-300 text-sm mt-1">Check back soon for new flight listings</p>
+                            </div>
+                        ) : (
+                            sortedFlights.map((flight, i) => (
+                                <ScrollReveal key={flight.id} delay={i * 0.1}>
+                                    <div
+                                        className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow"
+                                    >
+                                        <div className="flex flex-col md:flex-row md:items-center gap-6">
+                                            {/* Airline Info */}
+                                            <div className="flex items-center gap-4 md:w-48">
+                                                <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-2xl">
+                                                    {flight.airlineLogo}
                                                 </div>
-                                                <span className="text-xs text-slate-400 mt-1">
-                                                    {flight.stops === 0 ? "Non-stop" : `${flight.stops} stop`}
-                                                </span>
+                                                <div>
+                                                    <p className="font-semibold text-slate-900">{flight.airline}</p>
+                                                    <p className="text-sm text-slate-500">{flight.flightNumber}</p>
+                                                </div>
                                             </div>
 
-                                            {/* Arrival */}
-                                            <div className="text-center">
-                                                <p className="text-2xl font-bold text-slate-900">{flight.arrival.time}</p>
-                                                <p className="text-sm text-slate-500">{flight.arrival.airport}</p>
-                                            </div>
-                                        </div>
+                                            {/* Flight Times */}
+                                            <div className="flex-1 flex items-center gap-4">
+                                                {/* Departure */}
+                                                <div className="text-center">
+                                                    <p className="text-2xl font-bold text-slate-900">{flight.departure.time}</p>
+                                                    <p className="text-sm text-slate-500">{flight.departure.airport}</p>
+                                                </div>
 
-                                        {/* Amenities */}
-                                        <div className="flex items-center gap-2 md:w-24">
-                                            {flight.amenities.includes("wifi") && (
-                                                <Wifi size={16} className="text-slate-400" />
-                                            )}
-                                            {flight.amenities.includes("meals") && (
-                                                <UtensilsCrossed size={16} className="text-slate-400" />
-                                            )}
-                                        </div>
+                                                {/* Duration */}
+                                                <div className="flex-1 flex flex-col items-center">
+                                                    <span className="text-xs text-slate-400 mb-1">{flight.duration}</span>
+                                                    <div className="w-full h-0.5 bg-slate-200 relative">
+                                                        <Plane
+                                                            size={16}
+                                                            className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-blue-500 rotate-90"
+                                                        />
+                                                    </div>
+                                                    <span className="text-xs text-slate-400 mt-1">
+                                                        {flight.stops === 0 ? "Non-stop" : `${flight.stops} stop`}
+                                                    </span>
+                                                </div>
 
-                                        {/* Price & Book */}
-                                        <div className="flex items-center gap-4 md:w-48">
-                                            <div className="text-right">
-                                                <p className="text-2xl font-bold text-slate-900">
-                                                    AED {flight.price.toLocaleString()}
-                                                </p>
-                                                <p className="text-xs text-slate-500">per person</p>
+                                                {/* Arrival */}
+                                                <div className="text-center">
+                                                    <p className="text-2xl font-bold text-slate-900">{flight.arrival.time}</p>
+                                                    <p className="text-sm text-slate-500">{flight.arrival.airport}</p>
+                                                </div>
                                             </div>
-                                            <button className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg flex items-center gap-1">
-                                                Select
-                                                <ChevronRight size={16} />
-                                            </button>
+
+                                            {/* Amenities */}
+                                            <div className="flex items-center gap-2 md:w-24">
+                                                {flight.amenities.includes("wifi") && (
+                                                    <Wifi size={16} className="text-slate-400" />
+                                                )}
+                                                {flight.amenities.includes("meals") && (
+                                                    <UtensilsCrossed size={16} className="text-slate-400" />
+                                                )}
+                                            </div>
+
+                                            {/* Price & Book */}
+                                            <div className="flex items-center gap-4 md:w-48">
+                                                <div className="text-right">
+                                                    <p className="text-2xl font-bold text-slate-900">
+                                                        AED {flight.price.toLocaleString()}
+                                                    </p>
+                                                    <p className="text-xs text-slate-500">per person</p>
+                                                </div>
+                                                <button className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg flex items-center gap-1">
+                                                    Select
+                                                    <ChevronRight size={16} />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </ScrollReveal>
-                        ))}
+                                </ScrollReveal>
+                            ))
+                        )}
                     </div>
                 </div>
-            </section >
+            </section>
 
             {/* Why Book With Us */}
-            < section className="py-16 bg-white" >
+            <section className="py-16 bg-white">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-2xl font-bold text-slate-900 text-center mb-10">
                         Why Book Flights With Us?
@@ -414,7 +399,7 @@ export default function FlightsPage() {
                         </div>
                     </div>
                 </div>
-            </section >
+            </section>
         </>
     );
 }

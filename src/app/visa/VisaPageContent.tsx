@@ -1,7 +1,7 @@
 // src/app/visa/VisaPageContent.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import {
     FileText,
@@ -12,115 +12,15 @@ import {
     Globe,
     ShieldCheck,
     Sparkles,
+    Send,
+    User,
+    Mail,
+    Phone,
+    MessageSquare,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-interface VisaType {
-    id: string;
-    country: string;
-    flag: string;
-    types: {
-        name: string;
-        duration: string;
-        price: string;
-        processingTime: string;
-        features: string[];
-    }[];
-}
-
-const visaData: VisaType[] = [
-    {
-        id: "uae",
-        country: "United Arab Emirates",
-        flag: "🇦🇪",
-        types: [
-            {
-                name: "Tourist Visa",
-                duration: "30 Days",
-                price: "AED 350",
-                processingTime: "2-3 Working Days",
-                features: ["Single Entry", "Valid for 60 days from issue"],
-            },
-            {
-                name: "Tourist Visa",
-                duration: "60 Days",
-                price: "AED 650",
-                processingTime: "2-3 Working Days",
-                features: ["Single Entry", "Valid for 90 days from issue"],
-            },
-            {
-                name: "Tourist Visa",
-                duration: "90 Days",
-                price: "AED 1200",
-                processingTime: "3-5 Working Days",
-                features: ["Multiple Entry", "Valid for 180 days from issue"],
-            },
-            {
-                name: "Visa Change",
-                duration: "Inside UAE",
-                price: "AED 900",
-                processingTime: "Same Day",
-                features: ["No exit required", "All nationalities accepted"],
-            },
-        ],
-    },
-    {
-        id: "schengen",
-        country: "Schengen Countries",
-        flag: "🇪🇺",
-        types: [
-            {
-                name: "Tourist Visa",
-                duration: "Short Stay",
-                price: "AED 1500",
-                processingTime: "15-20 Working Days",
-                features: ["Up to 90 days", "26 European countries"],
-            },
-            {
-                name: "Business Visa",
-                duration: "Short Stay",
-                price: "AED 2000",
-                processingTime: "15-20 Working Days",
-                features: ["Business meetings", "Conferences"],
-            },
-        ],
-    },
-    {
-        id: "uk",
-        country: "United Kingdom",
-        flag: "🇬🇧",
-        types: [
-            {
-                name: "Standard Visitor",
-                duration: "6 Months",
-                price: "AED 1200",
-                processingTime: "15-20 Working Days",
-                features: ["Multiple Entry", "Tourism & Business"],
-            },
-            {
-                name: "Standard Visitor",
-                duration: "2 Years",
-                price: "AED 2500",
-                processingTime: "15-20 Working Days",
-                features: ["Multiple Entry", "Long validity"],
-            },
-        ],
-    },
-    {
-        id: "usa",
-        country: "United States",
-        flag: "🇺🇸",
-        types: [
-            {
-                name: "B1/B2 Visa",
-                duration: "10 Years",
-                price: "AED 1500",
-                processingTime: "Interview Required",
-                features: ["Multiple Entry", "Tourism & Business"],
-            },
-        ],
-    },
-];
+import { getActiveVisaData, type VisaCountry } from "@/data/visa";
+import { addBooking } from "@/data/bookings";
 
 export default function VisaPageContent() {
     const searchParams = useSearchParams();
@@ -128,10 +28,44 @@ export default function VisaPageContent() {
     const [selectedCountry, setSelectedCountry] = useState<string | null>(
         searchParams.get("type")?.split("-")[0] || null
     );
+    const [visaData, setVisaData] = useState<VisaCountry[]>([]);
+
+    // Enquiry form state
+    const [enquiryForm, setEnquiryForm] = useState({ name: "", email: "", phone: "", destination: "", message: "" });
+    const [enquirySubmitted, setEnquirySubmitted] = useState(false);
+    const [enquiryLoading, setEnquiryLoading] = useState(false);
+
+    useEffect(() => {
+        setVisaData(getActiveVisaData());
+        const handleStorage = (e: StorageEvent) => {
+            if (e.key === "oktravel_visa") {
+                setVisaData(getActiveVisaData());
+            }
+        };
+        window.addEventListener("storage", handleStorage);
+        return () => window.removeEventListener("storage", handleStorage);
+    }, []);
 
     const filteredVisa = visaData.filter((v) =>
         v.country.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    const handleEnquirySubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setEnquiryLoading(true);
+        addBooking({
+            type: "visa",
+            packageName: enquiryForm.destination || "Visa Enquiry",
+            destination: enquiryForm.destination,
+            name: enquiryForm.name,
+            email: enquiryForm.email,
+            phone: enquiryForm.phone,
+            message: enquiryForm.message,
+        });
+        await new Promise((r) => setTimeout(r, 800));
+        setEnquiryLoading(false);
+        setEnquirySubmitted(true);
+    };
 
     return (
         <>
@@ -145,7 +79,7 @@ export default function VisaPageContent() {
                 <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/20 text-white text-sm font-semibold rounded-full mb-6">
                         <Sparkles size={16} />
-                        Fast & Hassle-Free
+                        Fast &amp; Hassle-Free
                     </span>
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
                         Visa Services
@@ -288,7 +222,13 @@ export default function VisaPageContent() {
                                             ))}
                                         </ul>
 
-                                        <button className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors">
+                                        <button
+                                            onClick={() => {
+                                                setEnquiryForm((f) => ({ ...f, destination: country.country }));
+                                                document.getElementById("visa-enquiry-form")?.scrollIntoView({ behavior: "smooth" });
+                                            }}
+                                            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
+                                        >
                                             Apply Now
                                         </button>
                                     </div>
@@ -296,6 +236,98 @@ export default function VisaPageContent() {
                             </div>
                         </div>
                     ))}
+                </div>
+            </section>
+
+            {/* Visa Enquiry Form */}
+            <section id="visa-enquiry-form" className="py-20 bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-600">
+                <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-10">
+                        <h2 className="text-3xl font-bold text-white mb-3">Get a Free Visa Consultation</h2>
+                        <p className="text-white/70">Our visa experts will guide you through the entire process</p>
+                    </div>
+
+                    {enquirySubmitted ? (
+                        <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-10 text-center">
+                            <div className="w-16 h-16 bg-green-400/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <CheckCircle size={32} className="text-green-300" />
+                            </div>
+                            <h3 className="text-xl font-bold text-white mb-2">Enquiry Submitted!</h3>
+                            <p className="text-white/70">Our team will contact you within 24 hours.</p>
+                        </div>
+                    ) : (
+                        <form onSubmit={handleEnquirySubmit} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 space-y-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="relative">
+                                    <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" />
+                                    <input
+                                        type="text"
+                                        required
+                                        placeholder="Your Name"
+                                        value={enquiryForm.name}
+                                        onChange={(e) => setEnquiryForm({ ...enquiryForm, name: e.target.value })}
+                                        className="w-full pl-11 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/30"
+                                    />
+                                </div>
+                                <div className="relative">
+                                    <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" />
+                                    <input
+                                        type="email"
+                                        required
+                                        placeholder="Email Address"
+                                        value={enquiryForm.email}
+                                        onChange={(e) => setEnquiryForm({ ...enquiryForm, email: e.target.value })}
+                                        className="w-full pl-11 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/30"
+                                    />
+                                </div>
+                                <div className="relative">
+                                    <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" />
+                                    <input
+                                        type="tel"
+                                        required
+                                        placeholder="Phone Number"
+                                        value={enquiryForm.phone}
+                                        onChange={(e) => setEnquiryForm({ ...enquiryForm, phone: e.target.value })}
+                                        className="w-full pl-11 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/30"
+                                    />
+                                </div>
+                                <div className="relative">
+                                    <Globe size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" />
+                                    <input
+                                        type="text"
+                                        placeholder="Destination Country"
+                                        value={enquiryForm.destination}
+                                        onChange={(e) => setEnquiryForm({ ...enquiryForm, destination: e.target.value })}
+                                        className="w-full pl-11 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/30"
+                                    />
+                                </div>
+                            </div>
+                            <div className="relative">
+                                <MessageSquare size={16} className="absolute left-4 top-4 text-white/40" />
+                                <textarea
+                                    rows={3}
+                                    placeholder="Any specific requirements or questions?"
+                                    value={enquiryForm.message}
+                                    onChange={(e) => setEnquiryForm({ ...enquiryForm, message: e.target.value })}
+                                    className="w-full pl-11 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/30 resize-none"
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                disabled={enquiryLoading}
+                                className="w-full py-4 bg-white text-blue-700 font-bold rounded-xl hover:bg-white/90 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                            >
+                                {enquiryLoading ? (
+                                    <div className="w-5 h-5 border-2 border-blue-700/30 border-t-blue-700 rounded-full animate-spin" />
+                                ) : (
+                                    <>
+                                        <Send size={18} />
+                                        Submit Enquiry
+                                    </>
+                                )}
+                            </button>
+                        </form>
+                    )}
                 </div>
             </section>
         </>
