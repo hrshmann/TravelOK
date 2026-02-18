@@ -3,7 +3,7 @@
 
 const AUTH_KEY = 'oktravel_admin_auth';
 const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = 'admin123';
+const ADMIN_PASSWORD = 'TravelOK#1';
 
 export function login(username: string, password: string): boolean {
     if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {

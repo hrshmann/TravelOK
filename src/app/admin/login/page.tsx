@@ -114,10 +114,7 @@ export default function AdminLoginPage() {
                         </button>
                     </form>
 
-                    {/* Hint */}
-                    <p className="text-center text-white/20 text-xs mt-6">
-                        Default: admin / admin123
-                    </p>
+                    {/* Hint removed for security */}
                 </div>
             </div>
         </div>
