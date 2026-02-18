@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Facebook, Instagram, Youtube, MessageCircle, Star } from "lucide-react";
+import { Facebook, Instagram, Youtube, MessageCircle, Music2, Twitter } from "lucide-react";
 
 const socialLinks = [
     {
@@ -16,32 +16,40 @@ const socialLinks = [
     {
         name: "Instagram",
         icon: Instagram,
-        href: "https://instagram.com/oktravels",
+        href: "https://instagram.com/oktravel_ae",
         color: "bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400",
-        followers: "125K",
+        followers: "@oktravel_ae",
     },
     {
         name: "Facebook",
         icon: Facebook,
-        href: "https://facebook.com/oktravels",
+        href: "https://facebook.com/oktravel.ae",
         color: "bg-blue-600 hover:bg-blue-700",
-        followers: "89K",
+        followers: "@oktravel.ae",
     },
     {
         name: "YouTube",
         icon: Youtube,
-        href: "https://youtube.com/@oktravels",
+        href: "https://youtube.com/@OKTravel_ae",
         color: "bg-red-600 hover:bg-red-700",
-        followers: "45K",
+        followers: "@OKTravel_ae",
     },
     {
-        name: "TripAdvisor",
-        icon: Star,
-        href: "https://tripadvisor.com/oktravels",
-        color: "bg-emerald-500 hover:bg-emerald-600",
-        followers: "4.9★",
+        name: "TikTok",
+        icon: Music2,
+        href: "https://tiktok.com/@oktravel_ae",
+        color: "bg-black hover:bg-slate-800",
+        followers: "@oktravel_ae",
+    },
+    {
+        name: "X (Twitter)",
+        icon: Twitter,
+        href: "https://x.com/OKTravel_ae",
+        color: "bg-slate-800 hover:bg-slate-900",
+        followers: "@OKTravel_ae",
     },
 ];
+
 
 export default function SocialSidebar() {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
