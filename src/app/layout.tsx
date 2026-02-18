@@ -6,7 +6,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import FloatingActionHub from "@/components/ui/FloatingActionHub";
 import SocialSidebar from "@/components/ui/SocialSidebar";
-import LiveBookingToast from "@/components/ui/LiveBookingToast";
+
 import CallbackBanner from "@/components/home/CallbackBanner";
 import CompareDrawer, { CompareProvider } from "@/components/packages/CompareDrawer";
 import { CurrencyProvider } from "@/components/ui/CurrencySelector";
@@ -102,7 +102,7 @@ export default function RootLayout({
             {/* Premium Floating Components */}
             <FloatingActionHub />
             <SocialSidebar />
-            <LiveBookingToast />
+
             <CallbackBanner />
             <CompareDrawer />
           </CompareProvider>
