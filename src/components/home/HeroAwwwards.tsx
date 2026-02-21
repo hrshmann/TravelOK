@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Play, ChevronDown, MapPin, Star, Calendar } from "lucide-react";
 import { MagneticButton } from "../ui/SmoothScroll";
+import { useCurrency } from "@/components/ui/CurrencySelector";
 
 const destinations = [
     {
@@ -14,7 +15,7 @@ const destinations = [
         name: "Maldives",
         tagline: "Paradise Found",
         image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=1920",
-        price: "$1,499",
+        price: 1499,
         duration: "5 Days",
         rating: 4.9,
     },
@@ -23,7 +24,7 @@ const destinations = [
         name: "Santorini",
         tagline: "Greek Dreams",
         image: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1920",
-        price: "$2,199",
+        price: 2199,
         duration: "7 Days",
         rating: 4.8,
     },
@@ -32,7 +33,7 @@ const destinations = [
         name: "Bali",
         tagline: "Island Magic",
         image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1920",
-        price: "$899",
+        price: 899,
         duration: "6 Days",
         rating: 4.9,
     },
@@ -42,6 +43,7 @@ export default function HeroAwwwards() {
     const containerRef = useRef<HTMLDivElement>(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
+    const { formatPrice } = useCurrency();
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -231,7 +233,7 @@ export default function HeroAwwwards() {
                                             exit={{ opacity: 0, y: -10 }}
                                             className="text-4xl font-bold text-white"
                                         >
-                                            {activeDestination.price}
+                                            {formatPrice(activeDestination.price)}
                                             <span className="text-lg font-normal text-white/50 ml-2">/ person</span>
                                         </motion.p>
                                     </AnimatePresence>
@@ -276,7 +278,7 @@ export default function HeroAwwwards() {
 
                                             {/* Price */}
                                             <div className="text-right">
-                                                <p className="text-lg font-bold text-white">{dest.price}</p>
+                                                <p className="text-lg font-bold text-white">{formatPrice(dest.price)}</p>
                                                 <p className="text-white/50 text-xs">{dest.duration}</p>
                                             </div>
 

@@ -1,9 +1,11 @@
 // src/components/packages/PackageCard.tsx
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Clock, Star, ArrowRight } from "lucide-react";
 import { HolidayPackage } from "@/types/package";
 import { cn } from "@/lib/utils";
+import { useCurrency } from "@/components/ui/CurrencySelector";
 
 interface PackageCardProps {
     package_: HolidayPackage;
@@ -11,6 +13,7 @@ interface PackageCardProps {
 }
 
 export default function PackageCard({ package_, className }: PackageCardProps) {
+    const { formatPrice } = useCurrency();
     return (
         <Link
             href={`/package/${package_.slug}`}
@@ -48,7 +51,7 @@ export default function PackageCard({ package_, className }: PackageCardProps) {
                     <div className="px-4 py-2 bg-white rounded-xl shadow-lg">
                         <span className="text-xs text-slate-400 block">From</span>
                         <span className="text-xl font-bold text-orange-600">
-                            ${package_.price.toLocaleString()}
+                            {formatPrice(package_.price)}
                         </span>
                     </div>
                 </div>

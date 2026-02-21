@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Star, Users } from "lucide-react";
+import { useCurrency } from "@/components/ui/CurrencySelector";
 
 const destinations = [
     {
@@ -18,6 +19,7 @@ const destinations = [
         reviews: 1247,
         tagline: "City of Gold",
         color: "from-amber-500 to-orange-600",
+        startingPrice: 599,
     },
     {
         id: 2,
@@ -29,6 +31,7 @@ const destinations = [
         reviews: 892,
         tagline: "Paradise on Earth",
         color: "from-orange-400 to-orange-600",
+        startingPrice: 1299,
     },
     {
         id: 3,
@@ -40,6 +43,7 @@ const destinations = [
         reviews: 2103,
         tagline: "Land of Smiles",
         color: "from-emerald-400 to-teal-600",
+        startingPrice: 899,
     },
     {
         id: 4,
@@ -51,11 +55,13 @@ const destinations = [
         reviews: 1567,
         tagline: "Island of Gods",
         color: "from-purple-500 to-pink-600",
+        startingPrice: 799,
     },
 ];
 
 export default function DestinationsShowcase() {
     const containerRef = useRef<HTMLDivElement>(null);
+    const { formatPrice } = useCurrency();
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start end", "end start"],
@@ -187,7 +193,7 @@ export default function DestinationsShowcase() {
                                                     <span className="text-white/70 text-sm">{dest.packages} packages</span>
                                                 </div>
                                                 <div className="h-4 w-px bg-white/20" />
-                                                <span className="text-white/70 text-sm">From $899</span>
+                                                <span className="text-white/70 text-sm">From {formatPrice(dest.startingPrice)}</span>
                                             </div>
                                         </div>
                                     </div>
